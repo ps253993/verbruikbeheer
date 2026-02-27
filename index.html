@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auto verbruik tracker</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 <body>
 
@@ -57,10 +60,38 @@
 
     <!-- Grafiek -->
     <section class="chart">
-        <p>Grafiek</p>
+        <canvas id="verbruikChart"></canvas>
     </section>
 
+
 </main>
+
+<script>
+    // Dummy data – kunnen we later dynamisch maken
+    const ctx = document.getElementById('verbruikChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ["Jan", "Feb", "Mrt", "Apr", "Mei", "Jun"],
+            datasets: [{
+                label: 'Brandstofverbruik (L/100km)',
+                data: [6.5, 6.8, 6.2, 7.0, 6.4, 6.1],
+                borderColor: '#ff6b4a',
+                backgroundColor: 'rgba(255,107,74,0.2)',
+                borderWidth: 3,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: false }
+            }
+        }
+    });
+</script>
 
 </body>
 </html>
