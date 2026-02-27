@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto verbruik tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="navbar">
+    <h1 class="logo">Auto verbruik tracker</h1>
+    <nav>
+        <a href="#">Logboek</a>
+        <a href="#">Autos</a>
+        <a href="#">Account</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <!-- Linker kolom -->
+    <section class="left-panel">
+        <div class="box">
+            <input type="date" placeholder="Datum">
+            <input type="number" placeholder="kilometerstand">
+            <select>
+                <option>Brandstof type</option>
+            </select>
+            <input type="number" placeholder="Liters getankt">
+            <button class="btn">Toevoegen</button>
+        </div>
+
+        <div class="box">
+            <input type="text" placeholder="Exporteer van _ tot _">
+            <select>
+                <option>Exporteer als</option>
+            </select>
+            <button class="btn">Exporteer</button>
+        </div>
+    </section>
+
+    <!-- Bovenste info blok -->
+    <section class="top-info">
+        <select>
+            <option>Auto</option>
+        </select>
+        <div class="info-box">Laatste Tankbeurt</div>
+        <div class="info-box">Laatste verbruik</div>
+        <div class="info-box">Gem. verbruik</div>
+    </section>
+
+    <!-- Grafiek -->
+    <section class="chart">
+        <p>Grafiek</p>
+    </section>
+
+</main>
+
+</body>
+</html>

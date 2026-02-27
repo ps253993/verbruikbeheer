@@ -1,0 +1,93 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+}
+
+.navbar {
+    background: #ffffff;
+    padding: 12px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #ddd;
+}
+
+.navbar .logo {
+    margin: 0;
+    font-size: 18px;
+}
+
+.navbar a {
+    margin-left: 20px;
+    color: #333;
+    text-decoration: none;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Linker panel */
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.box {
+    background: #2f2f2f;
+    padding: 20px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.box input,
+.box select {
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+}
+
+.btn {
+    background: #ff6b4a;
+    border: none;
+    padding: 12px;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Boven info blok */
+.top-info {
+    background: #2f2f2f;
+    padding: 15px;
+    display: flex;
+    gap: 15px;
+    border-radius: 5px;
+}
+
+.top-info select,
+.top-info .info-box {
+    background: white;
+    padding: 12px;
+    border-radius: 3px;
+    width: 150px;
+}
+
+/* Grafiek */
+.chart {
+    background: #3a3a3a;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 22px;
+}
