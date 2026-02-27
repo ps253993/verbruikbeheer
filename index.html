@@ -25,16 +25,21 @@
             <input type="date" placeholder="Datum">
             <input type="number" placeholder="kilometerstand">
             <select>
-                <option>Brandstof type</option>
+                <option>Brandstof type</option>>
             </select>
             <input type="number" placeholder="Liters getankt">
             <button class="btn">Toevoegen</button>
         </div>
 
         <div class="box">
-            <input type="text" placeholder="Exporteer van _ tot _">
+            <label for="mindatum">Exporteer van</label>
+            <input type="date" name="mindatum">
+            <label for="maxdatum">tot</label>
+            <input type="date" name="maxdatum">
             <select>
                 <option>Exporteer als</option>
+                <option value="xlsx">xlsx</option>
+                <option value="csv">csv</option>
             </select>
             <button class="btn">Exporteer</button>
         </div>

@@ -54,6 +54,10 @@ body {
     border: none;
     border-radius: 3px;
 }
+.box label {
+    color: white;
+    font-size: 15px;
+}
 
 .btn {
     background: #ff6b4a;
@@ -71,6 +75,8 @@ body {
     display: flex;
     gap: 15px;
     border-radius: 5px;
+    height: 50px;
+    width: auto;
 }
 
 .top-info select,
@@ -78,7 +84,7 @@ body {
     background: white;
     padding: 12px;
     border-radius: 3px;
-    width: 150px;
+    width: 15%;
 }
 
 /* Grafiek */
@@ -90,4 +96,5 @@ body {
     align-items: center;
     color: white;
     font-size: 22px;
+    width: auto;
 }
