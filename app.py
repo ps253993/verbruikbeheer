@@ -1,4 +1,4 @@
-from flask import Flask, session, url_for, redirect, request
+from flask import Flask, session, url_for, redirect, request, render_template
 import secrets
 
 app = Flask(__name__)
@@ -30,19 +30,13 @@ def login():
         else:
             return "wrong login"
     #weergeef inlog pagina    
-    return '''
-        <form method="post">
-            <p><input type=text name=username>
-            <p><input type=text name=password>
-            <p><input type=submit value=Login>
-        </form>
-    '''
+    return render_template("login.html")
 #home pagina
 @app.route("/home")
 def home():
     #check voor username in sessie
     if 'username' in session:
-        return "home pagina van "+session["username"]
+        return render_template("dashboard.html")
     else:
         #anders terug naar login
         return redirect(url_for("login"))
