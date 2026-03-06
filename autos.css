@@ -1,0 +1,142 @@
+/* ====== Basis variabelen ====== */
+:root{
+  --bg: #f2f2f2;
+  --panel: #3d3d3d;     /* donker paneel */
+  --white: #ffffff;
+  --text: #222;
+  --muted: #e6e6e6;
+  --accent: #ff6b4a;    /* oranje knop */
+  --radius: 8px;
+  --gap: 20px;
+}
+
+/* ====== Reset/Basis ====== */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body{
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ====== Header / Navbar ====== */
+.navbar{
+  background: var(--white);
+  border-bottom: 2px solid #ddd;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo{
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
+.navbar__right{ display: flex; gap: 28px; }
+.nav-link{
+  color: #444;
+  text-decoration: none;
+}
+.nav-link:hover{ text-decoration: underline; }
+
+/* ====== Shell: ruimte rondom het paneel ====== */
+.shell{
+  /* Vulling rondom het donkere paneel */
+  padding: 16px;
+  /* Laat de shell het resterende scherm vullen onder de navbar */
+  min-height: calc(100vh - 58px); /* 58px ~ navbar hoogte; pas aan indien nodig */
+  display: grid;
+}
+
+/* ====== Donker paneel ====== */
+.board{
+  background: var(--panel);
+  border-radius: 6px;
+  padding: 18px 22px 22px;
+  /* Laat het paneel de shell volledig vullen */
+  height: 100%;
+  /* Grid binnen het paneel: 
+     - rij 1: controls-balk
+     - rij 2: lijst-gebied (opvulling)
+  */
+  display: grid;
+  grid-template-rows: auto 1fr;
+  position: relative;
+}
+
+/* Linker titel (“text”) in het paneel */
+.board__side-title{
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  color: var(--white);
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Bovenste controles gecentreerd */
+.board__controls{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  /* Extra linker padding zodat de controls niet botsen met de zijtitel */
+  padding-left: 80px;
+  margin-top: 2px;
+  margin-bottom: 8px;
+}
+
+/* Velden + knop */
+.field{
+  height: 36px;
+  min-width: 160px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 4px;
+  background: var(--white);
+  color: #333;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.06) inset;
+}
+.field::placeholder{ color: #777; }
+
+.btn{
+  height: 36px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn:hover{ filter: brightness(.95); }
+
+/* Lijst-gebied in het midden */
+.board__list{
+  display: grid;
+  place-items: center;
+}
+
+.placeholder{
+  color: var(--muted);
+  letter-spacing: .2px;
+}
+
+/* ====== Responsiveness ====== */
+@media (max-width: 768px){
+  .board__controls{
+    flex-wrap: wrap;
+    justify-content: flex-start; /* op small schermen links beginnen */
+    padding-left: 0;             /* zijtitel kan erboven vallen */
+    margin-left: 0;
+  }
+  .board__side-title{
+    position: static;
+    margin-bottom: 10px;
+  }
+}
