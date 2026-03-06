@@ -376,3 +376,34 @@ body {
   .board__title{ text-align: left; }
   .board__right{ justify-self: start; }
 }
+
+/* ====== LOGIN PAGINA ====== */
+
+.login-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+}
+
+/* De container van het login formulier */
+.login-box {
+    background: var(--panel);
+    padding: 40px;
+    border-radius: var(--radius);
+    width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+
+/* Titel */
+.login-title {
+    color: var(--label);
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 22px;
+}
