@@ -15,8 +15,9 @@
       <a class="logo">Auto verbruik tracker</a>
     </div>
     <nav class="navbar__right">
-      <a href="log.html" class="nav-link">Logboek</a>
-      <a href="autos.html" class="nav-link">Autos</a>
+      <a href={{url_for("logboek")}} class="nav-link">Logboek</a>
+      <a href={{url_for("autos")}} class="nav-link">Autos</a>
+      <a href={{url_for("logout")}} class="nav-link">Uitloggen</a>
     </nav>
   </header>
 

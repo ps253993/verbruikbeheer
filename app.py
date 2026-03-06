@@ -46,7 +46,7 @@ def home():
 def logboek():
     #check voor username in sessie
     if 'username' in session:
-        return "logboek pagina van "+session["username"]
+        return render_template("log.html")
     else:
         #anders terug naar login
         return redirect(url_for("login"))
@@ -56,7 +56,7 @@ def logboek():
 def autos():
     #check voor username in sessie
     if 'username' in session:
-        return "autos pagina van "+session["username"]
+        return render_template("autos.html")
     else:
         #anders terug naar login
         return redirect(url_for("login"))
