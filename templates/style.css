@@ -27,7 +27,7 @@ body {
 .container {
     display: grid;
     grid-template-columns: 300px 1fr;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
     gap: 20px;
     padding: 20px;
 }
@@ -80,7 +80,6 @@ body {
     display: flex;
     gap: 15px;
     border-radius: 5px;
-    height: 50px;
     width: auto;
     grid-column: 2; /* FIX */
     grid-row: 1;
@@ -104,8 +103,7 @@ body {
     padding: 20px;
     grid-column: 2; /* FIX */
     grid-row: 2;
-    display: flex;
-    max-height: 460px;
+    max-height: 500px;
 }
 
 .chart canvas {
