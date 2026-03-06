@@ -28,7 +28,7 @@ def login():
             session['username'] = request.form['username']
             return redirect(url_for("index"))
         else:
-            return "wrong login"
+            return render_template("login.html")
     #weergeef inlog pagina    
     return render_template("login.html")
 #home pagina
