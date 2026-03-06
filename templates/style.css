@@ -135,7 +135,7 @@ body{
 
 /* ====== Header / Navbar ====== */
 
-.navbar__right{ display: flex; gap: 28px; }
+.navbar__right{ display: flex; gap: 2%; }
 .nav-link{
   color: #444;
   text-decoration: none;
