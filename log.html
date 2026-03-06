@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Logboek</title>
+  <link rel="stylesheet" href="log.css" />
+</head>
+<body>
+
+  <!-- Header / Navbar -->
+  <header class="navbar">
+    <div class="navbar__left">
+      <a href="#" class="logo">Logo</a>
+    </div>
+    <nav class="navbar__right">
+      <a href="#" class="nav-link">Text</a>
+      <a href="#" class="nav-link">Text</a>
+    </nav>
+  </header>
+
+  <!-- Hoofdsectie -->
+  <main class="shell">
+    <section class="board">
+
+      <!-- Bovenste regel: dropdown (links), titel (midden), datum (rechts) -->
+      <div class="board__bar">
+        <div class="board__left">
+          <label class="sr-only" for="filter">Filter</label>
+          <select id="filter" class="select">
+            <option selected>Dropdown</option>
+            <option>Optie 1</option>
+            <option>Optie 2</option>
+            <option>Optie 3</option>
+          </select>
+        </div>
+
+        <h2 class="board__title">Text</h2>
+
+        <div class="board__right">
+          <label class="sr-only" for="datum">Datum</label>
+          <input id="datum" class="input" type="date" placeholder="Datum" />
+        </div>
+      </div>
+
+      <!-- Lijst-gebied -->
+      <div class="board__list">
+        <div class="placeholder">List</div>
+        <!--
+          Hier kun je later je echte logregels renderen (UL/LI of cards).
+        -->
+      </div>
+
+    </section>
+  </main>
+
+</body>
+</html>
