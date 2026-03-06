@@ -150,3 +150,15 @@ body {
   .board__title{ text-align: left; }
   .board__right{ justify-self: start; }
 }
+
+html, body {
+    height: 100%;
+}
+
+.shell {
+    height: calc(100% - 70px); /* hoogte van je navbar eraf trekken */
+}
+
+.board {
+    height: 100%;
+}
