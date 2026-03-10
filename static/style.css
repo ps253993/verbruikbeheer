@@ -1,13 +1,13 @@
 /* ====== Basis variabelen ====== */
 :root{
-  --bg: #f2f2f2;
-  --panel: #3d3d3d;     /* donker paneel */
-  --label: #ffffff;
+  --bg: #082032;
+  --panel: #2C394B;     /* donker paneel */
+  --label: white;
   --text: #222;
-  --nav: white;
-  --button_color: #ff6b4a;
+  --nav: #334756;
+  --button_color: #FF4C29;
   --button_text: white;
-  --logo_color: #333;
+  --logo_color: white;
   --radius: 8px;
   --gap: 20px;
 }
