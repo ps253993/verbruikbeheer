@@ -23,7 +23,7 @@ def check_user(username, password):
 @app.route("/")
 def index():
     #ga naar home wanneer username in sessie zit
-    if 'username' in session:
+    if 'user' in session:
         return redirect(url_for("home"))
     else:
         return redirect(url_for("login"))
@@ -36,7 +36,8 @@ def login():
         #check voor juiste login gegevens
         if check_user(request.form['username'], request.form['password']) and request.form['btn'] == "login": 
             #voeg username aan sessie toe
-            session['username'] = request.form['username']
+            userID = db.execute("SELECT user_id FROM users WHERE user_name = ?", (request.form['username'],)).fetchone()
+            session['user'] = userID
             return redirect(url_for("index"))
         elif request.form['username'] != "" and request.form['password'] != "" and request.form['btn'] == "signup":
             #check of username al in database staat
@@ -61,7 +62,7 @@ def login():
 @app.route("/home")
 def home():
     #check voor username in sessie
-    if 'username' in session:
+    if 'user' in session:
         return render_template("dashboard.html")
     else:
         #anders terug naar login
@@ -71,17 +72,17 @@ def home():
 @app.route("/logboek")
 def logboek():
     #check voor username in sessie
-    if 'username' in session:
+    if 'user' in session:
         return render_template("log.html")
     else:
         #anders terug naar login
         return redirect(url_for("login"))
 
 #autos pagina
-@app.route("/autos")
+@app.route("/autos", methods=['GET', 'POST'])
 def autos():
     #check voor username in sessie
-    if 'username' in session:
+    if 'user' in session:
         return render_template("autos.html")
     else:
         #anders terug naar login
@@ -90,9 +91,9 @@ def autos():
 #pagina voor uitloggen
 @app.route("/logout")
 def logout():
-    if 'username' in session:
+    if 'user' in session:
         #haal username uit sessie
-        session.pop('username')
+        session.pop('user')
         #ga terug naar index
         return redirect(url_for("index"))
     else:

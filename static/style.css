@@ -315,12 +315,65 @@ body {
 }
 
 /* Lijstgebied */
-.board__list{
-  background: transparent; /* donker blijft zichtbaar */
-  border-radius: 4px;
-  min-height: 45vh;
-  display: grid;
-  place-items: center;
+/* Hoofdcontainer */
+.board__list {
+    background: transparent;
+    border-radius: 4px;
+    min-height: 45vh;
+    display: grid;
+    place-items: center;
+    font-family: Arial, sans-serif;
+    color: var(--button_text);
+}
+
+/* Tabel container (scroll) */
+.board__list .table-container {
+    width: 500px;
+    max-height: 200px;     /* hoogte voor scroll */
+    overflow-y: auto;      /* scrollwiel */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Tabel */
+.board__list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Tabelcellen */
+.board__list th,
+.board__list td {
+    padding: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    text-align: left;
+    color: white;          /* ✅ tekst wit */
+}
+
+/* Header */
+.board__list th {
+    background-color: #2b3b4f; /* dark header */
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+/* Rij hover (optioneel maar fijn) */
+.board__list tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Knoppen */
+.board__list button {
+    padding: 4px 8px;
+    cursor: pointer;
+    color: white;
+    background-color: #ff5722;
+    border: none;
+    border-radius: 4px;
+}
+
+.board__list button:hover {
+    opacity: 0.9;
 }
 
 .placeholder{
