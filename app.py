@@ -65,10 +65,14 @@ def autos():
 #pagina voor uitloggen
 @app.route("/logout")
 def logout():
-    #haal username uit sessie
-    session.pop('username')
-    #ga terug naar index
-    return redirect(url_for("index"))
+    if 'username' in session:
+        #haal username uit sessie
+        session.pop('username')
+        #ga terug naar index
+        return redirect(url_for("index"))
+    else:
+        #anders terug naar login
+        return redirect(url_for("login"))   
 
 if __name__ == "__main__":
     app.run(debug=True)
