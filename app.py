@@ -31,6 +31,7 @@ def login():
             return render_template("login.html")
     #weergeef inlog pagina    
     return render_template("login.html")
+
 #home pagina
 @app.route("/home")
 def home():
