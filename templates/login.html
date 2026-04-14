@@ -14,8 +14,12 @@
             <form method="post">
                 <input type="text" class="field" placeholder="Username" name="username">
                 <input type="password" class="field" placeholder="Password" name="password">
-                <button class="btn">Login</button>
-            </form>
+                <button class="btn" name="btn" value="login">Login</button>
+                <button class="btn" name="btn" value="signup">Sign Up</button>
+                {% if status %}
+                    <p class="status">{{ status }}</p>
+                {% endif %}
+                </form>
         </div>
     </main>
 
