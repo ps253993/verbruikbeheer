@@ -124,7 +124,7 @@ def autos():
             <td>{car[3]}</td>
             <td>{car[4]}</td>
             <td>{car[5]}</td>
-            <td>{car[6]}</td>
+            <td>{car[7]}</td>
             <td>
                 <form method='post' action='/deletecar'>
                     <input type='hidden' name='car_id' value='{car[0]}'><button class='btn' type='submit'>Verwijderen</button>
