@@ -3,23 +3,11 @@ import secrets
 import sqlite3
 import hashlib
 import requests
-import json
 
 db = sqlite3.connect("verbruikData.db", check_same_thread=False)
 
 app = Flask(__name__)
-
 app.secret_key = secrets.token_hex()
-
-def check_user(username, password):
-    #check of username en password in database staan
-    pswrd = hashlib.sha256(password.encode()).hexdigest()
-    user = db.execute("SELECT * FROM users WHERE user_name = ? AND user_password = ?", (username, pswrd)).fetchone()
-
-    if user:
-        return True
-    else:
-        return False
 
 #index
 @app.route("/")
@@ -35,21 +23,25 @@ def index():
 def login():
     if request.method == 'POST':
 
+        username = db.execute("SELECT user_name FROM users WHERE user_name = ?", (request.form['username'],)).fetchone()
+        password = hashlib.sha256(request.form['password'].encode()).hexdigest()
+
+        if username:
+            auth = db.execute("SELECT * FROM users WHERE user_name = ? AND user_password = ?", (username[0], password)).fetchone()
+        else: 
+            auth = None
+
         #check voor juiste login gegevens
-        if check_user(request.form['username'], request.form['password']) and request.form['btn'] == "login": 
-            #voeg username aan sessie toe
-            userID = db.execute("SELECT user_id FROM users WHERE user_name = ?", (request.form['username'],)).fetchone()
-            session['user'] = userID
-            return redirect(url_for("index"))
+        if auth and request.form['btn'] == "login":
+            #voeg user id aan sessie toe
+            session['user'] = db.execute("SELECT user_id FROM users WHERE user_name = ?", (request.form['username'],)).fetchone()[0]
+            return redirect(url_for("index"))   
         elif request.form['username'] != "" and request.form['password'] != "" and request.form['btn'] == "signup":
+
             #check of username al in database staat
-            user = db.execute("SELECT user_name FROM users WHERE user_name = ?", (request.form['username'],)).fetchone()
-        
-            if user == None:
-                #hash wachtwoord
-                pswrd = hashlib.sha256(request.form['password'].encode()).hexdigest()
+            if username == None:
                 # Voeg nieuwe gebruiker toe aan database
-                db.execute("INSERT INTO users (user_name, user_password) VALUES (?, ?)", (request.form['username'], pswrd))
+                db.execute("INSERT INTO users (user_name, user_password) VALUES (?, ?)", (request.form['username'], password))
                 db.commit()
                 #zeg dat account is aangemaakt
                 return render_template("login.html", status="Account aangemaakt!")
@@ -110,11 +102,11 @@ def autos():
                 if request.form["kilometers"] == "" or request.form["maxliter"] == "":
                     return render_template("autos.html", message="Vul alle velden in.")
                 db.execute("INSERT INTO cars (user_id, car_name, car_licenseplate, car_meters, car_fueltype, car_maxliter) VALUES (?, ?, ?, ?, ?, ?)", 
-                        (session['user'][0], carName, kenteken, request.form["kilometers"], fuelType, request.form["maxliter"]))
+                        (session['user'], carName, kenteken, request.form["kilometers"], fuelType, request.form["maxliter"]))
                 db.commit()
 
         #laat lijst zien op pagina
-        cars = db.execute("SELECT * FROM cars WHERE user_id = ?", (session['user'][0],)).fetchall()
+        cars = db.execute("SELECT * FROM cars WHERE user_id = ?", (session['user'],)).fetchall()
 
         html = ""
         for car in cars:
@@ -141,7 +133,7 @@ def autos():
 def deletecar():
     if 'user' in session:
         car_id = request.form['car_id']
-        db.execute("DELETE FROM cars WHERE car_id = ? AND user_id = ?", (car_id, session['user'][0]))
+        db.execute("DELETE FROM cars WHERE car_id = ? AND user_id = ?", (car_id, session['user']))
         db.commit()
         return redirect(url_for("autos"))
     else:
@@ -154,6 +146,7 @@ def logout():
     if 'user' in session:
         #haal username uit sessie
         session.pop('user')
+
         #ga terug naar index
         return redirect(url_for("index"))
     else:
