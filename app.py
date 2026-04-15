@@ -25,16 +25,12 @@ def login():
 
         username = db.execute("SELECT user_name FROM users WHERE user_name = ?", (request.form['username'],)).fetchone()
         password = hashlib.sha256(request.form['password'].encode()).hexdigest()
-
-        if username:
-            auth = db.execute("SELECT * FROM users WHERE user_name = ? AND user_password = ?", (username[0], password)).fetchone()
-        else: 
-            auth = None
+        auth = db.execute("SELECT * FROM users WHERE user_name = ? AND user_password = ?", (request.form['username'], password)).fetchone()
 
         #check voor juiste login gegevens
         if auth and request.form['btn'] == "login":
             #voeg user id aan sessie toe
-            session['user'] = db.execute("SELECT user_id FROM users WHERE user_name = ?", (request.form['username'],)).fetchone()[0]
+            session['user'] = db.execute("SELECT user_id FROM users WHERE user_name = ?", (username[0],)).fetchone()[0]
             return redirect(url_for("index"))   
         elif request.form['username'] != "" and request.form['password'] != "" and request.form['btn'] == "signup":
 
@@ -53,7 +49,7 @@ def login():
     return render_template("login.html")
 
 #home pagina
-@app.route("/home")
+@app.route("/home", methods=['GET', 'POST'])
 def home():
     #check voor username in sessie
     if 'user' in session:
@@ -63,7 +59,7 @@ def home():
         return redirect(url_for("login"))
 
 #logboek pagina
-@app.route("/logboek")
+@app.route("/logboek", methods=['GET', 'POST'])
 def logboek():
     #check voor username in sessie
     if 'user' in session:
