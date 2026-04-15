@@ -2,6 +2,8 @@ from flask import Flask, session, url_for, redirect, request, render_template
 import secrets
 import sqlite3
 import hashlib
+import requests
+import json
 
 db = sqlite3.connect("verbruikData.db", check_same_thread=False)
 
@@ -83,7 +85,65 @@ def logboek():
 def autos():
     #check voor username in sessie
     if 'user' in session:
-        return render_template("autos.html")
+
+        #als er op toevoegen word geklikt
+        if request.method == 'POST':
+
+            kenteken = str(request.form['kenteken']).upper()
+
+            carInfo = requests.get(
+                                    url="https://opendata.rdw.nl/resource/m9d7-ebf2.json",
+                                    params={"$query":f"SELECT merk, handelsbenaming WHERE kenteken = '{kenteken}'"}
+                                   )
+            carFuel = requests.get(
+                                    url="https://opendata.rdw.nl/resource/8ys7-d773.json",
+                                    params={"$query":f"SELECT brandstof_omschrijving WHERE kenteken = '{kenteken}'"}
+                                   )
+            
+            if carInfo.status_code != 200 or carFuel.status_code != 200 or len(carInfo.json()) == 0 or len(carFuel.json()) == 0:
+                return render_template("autos.html", message="Er is een fout opgetreden bij het ophalen van de gegevens.")
+            else:
+                for car in carInfo.json():
+                    carName = car['merk'].lower().capitalize() + " " + car['handelsbenaming'].lower().capitalize()
+                for fuel in carFuel.json():
+                    fuelType = fuel['brandstof_omschrijving'].lower().capitalize()
+                if request.form["kilometers"] == "" or request.form["maxliter"] == "":
+                    return render_template("autos.html", message="Vul alle velden in.")
+                db.execute("INSERT INTO cars (user_id, car_name, car_licenseplate, car_meters, car_fueltype, car_maxliter) VALUES (?, ?, ?, ?, ?, ?)", 
+                        (session['user'][0], carName, kenteken, request.form["kilometers"], fuelType, request.form["maxliter"]))
+                db.commit()
+
+        #laat lijst zien op pagina
+        cars = db.execute("SELECT * FROM cars WHERE user_id = ?", (session['user'][0],)).fetchall()
+
+        html = ""
+        for car in cars:
+            html += f"""
+            <tr>
+            <td>{car[2]}</td>
+            <td>{car[3]}</td>
+            <td>{car[4]}</td>
+            <td>{car[5]}</td>
+            <td>{car[6]}</td>
+            <td>
+                <form method='post' action='/deletecar'>
+                    <input type='hidden' name='car_id' value='{car[0]}'><button class='btn' type='submit'>Verwijderen</button>
+                </form>
+            </td>
+            </tr>
+            """
+        return render_template("autos.html", table=html)
+    else:
+        #anders terug naar login
+        return redirect(url_for("login"))
+
+@app.route("/deletecar", methods=['POST'])
+def deletecar():
+    if 'user' in session:
+        car_id = request.form['car_id']
+        db.execute("DELETE FROM cars WHERE car_id = ? AND user_id = ?", (car_id, session['user'][0]))
+        db.commit()
+        return redirect(url_for("autos"))
     else:
         #anders terug naar login
         return redirect(url_for("login"))

@@ -30,9 +30,13 @@
       <!-- Bovenbalk met twee velden + button in het midden -->
        <form method="post">
           <div class="board__controls">
-            <input type="text" class="field" placeholder="Kenteken" />
-            <input type="text" class="field" placeholder="kilometerstand" />
+            <input type="text" class="field" placeholder="Kenteken" name="kenteken" />
+            <input type="text" class="field" placeholder="kilometerstand" name="kilometers" />
+            <input type="text" class="field" placeholder="Maximale liters" name="maxliter" />
             <button class="btn">Toevoegen</button>
+            {% if message %}
+                <p class="error-message">{{ message }}</p>
+            {% endif %}
           </div>
       </form>
       <!-- Lijst-gebied -->
@@ -41,37 +45,15 @@
                 <thead>
                     <tr>
                         <th>Naam</th>
-                        <th>Leeftijd</th>
+                        <th>Kenteken</th>
+                        <th>Kilometerstand</th>
+                        <th>Brandstof</th>
+                        <th>Maximale liters</th>
                         <th>Actie</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Jan</td>
-                        <td>22</td>
-                        <td><button class="btn" >Klik</button></td>
-                    </tr>
-                    <tr>
-                        <td>Piet</td>
-                        <td>25</td>
-                        <td><button class="btn" >Klik</button></td>
-                    </tr>
-                    <tr>
-                        <td>Klaas</td>
-                        <td>30</td>
-                        <td><button class="btn" >Klik</button></td>
-                    </tr>
-                    <!-- extra rijen voor scroll -->
-                    <tr>
-                        <td>Anna</td>
-                        <td>28</td>
-                        <td><button class="btn" >Klik</button></td>
-                    </tr>
-                    <tr>
-                        <td>Lisa</td>
-                        <td>21</td>
-                        <td><button class="btn" >Klik</button></td>
-                    </tr>
+                    {{ table | safe }}
                 </tbody>
             </table>
       </div>
