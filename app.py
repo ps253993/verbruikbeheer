@@ -77,7 +77,7 @@ def cars():
         #als er op toevoegen word geklikt
         if request.method == 'POST':
 
-            license_plate = str(request.form['kenteken']).upper()
+            license_plate = str(request.form['license_plate']).upper()
 
             carInfo = requests.get(
                                     url="https://opendata.rdw.nl/resource/m9d7-ebf2.json",
@@ -98,7 +98,7 @@ def cars():
                 if request.form["kilometers"] == "" or request.form["maxliter"] == "":
                     return render_template("cars.html", message="Vul alle velden in.")
                 db.execute("INSERT INTO cars (user_id, car_name, car_licenseplate, car_meters, car_fueltype, car_maxliter) VALUES (?, ?, ?, ?, ?, ?)", 
-                        (session['user'], carName, license_plate, request.form["kilometers"], fuelType, request.form["maxliter"]))
+                        (session['user'], carName, license_plate, request.form["kilometers"], fuelType, request.form["max_liters"]))
                 db.commit()
 
         #laat lijst zien op pagina
