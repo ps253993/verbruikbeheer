@@ -59,8 +59,8 @@ def home():
         return redirect(url_for("login"))
 
 #logboek pagina
-@app.route("/logboek", methods=['GET', 'POST'])
-def logboek():
+@app.route("/log", methods=['GET', 'POST'])
+def log():
     #check voor username in sessie
     if 'user' in session:
         return render_template("log.html")
@@ -69,36 +69,36 @@ def logboek():
         return redirect(url_for("login"))
 
 #autos pagina
-@app.route("/autos", methods=['GET', 'POST'])
-def autos():
+@app.route("/cars", methods=['GET', 'POST'])
+def cars():
     #check voor username in sessie
     if 'user' in session:
 
         #als er op toevoegen word geklikt
         if request.method == 'POST':
 
-            kenteken = str(request.form['kenteken']).upper()
+            license_plate = str(request.form['kenteken']).upper()
 
             carInfo = requests.get(
                                     url="https://opendata.rdw.nl/resource/m9d7-ebf2.json",
-                                    params={"$query":f"SELECT merk, handelsbenaming WHERE kenteken = '{kenteken}'"}
+                                    params={"$query":f"SELECT merk, handelsbenaming WHERE kenteken = '{license_plate}'"}
                                    )
             carFuel = requests.get(
                                     url="https://opendata.rdw.nl/resource/8ys7-d773.json",
-                                    params={"$query":f"SELECT brandstof_omschrijving WHERE kenteken = '{kenteken}'"}
+                                    params={"$query":f"SELECT brandstof_omschrijving WHERE kenteken = '{license_plate}'"}
                                    )
             
             if carInfo.status_code != 200 or carFuel.status_code != 200 or len(carInfo.json()) == 0 or len(carFuel.json()) == 0:
-                return render_template("autos.html", message="Er is een fout opgetreden bij het ophalen van de gegevens.")
+                return render_template("cars.html", message="Er is een fout opgetreden bij het ophalen van de gegevens.")
             else:
                 for car in carInfo.json():
                     carName = car['merk'].lower().capitalize() + " " + car['handelsbenaming'].lower().capitalize()
                 for fuel in carFuel.json():
                     fuelType = fuel['brandstof_omschrijving'].lower().capitalize()
                 if request.form["kilometers"] == "" or request.form["maxliter"] == "":
-                    return render_template("autos.html", message="Vul alle velden in.")
+                    return render_template("cars.html", message="Vul alle velden in.")
                 db.execute("INSERT INTO cars (user_id, car_name, car_licenseplate, car_meters, car_fueltype, car_maxliter) VALUES (?, ?, ?, ?, ?, ?)", 
-                        (session['user'], carName, kenteken, request.form["kilometers"], fuelType, request.form["maxliter"]))
+                        (session['user'], carName, license_plate, request.form["kilometers"], fuelType, request.form["maxliter"]))
                 db.commit()
 
         #laat lijst zien op pagina
@@ -120,7 +120,7 @@ def autos():
             </td>
             </tr>
             """
-        return render_template("autos.html", table=html)
+        return render_template("cars.html", table=html)
     else:
         #anders terug naar login
         return redirect(url_for("login"))
@@ -131,7 +131,7 @@ def deletecar():
         car_id = request.form['car_id']
         db.execute("DELETE FROM cars WHERE car_id = ? AND user_id = ?", (car_id, session['user']))
         db.commit()
-        return redirect(url_for("autos"))
+        return redirect(url_for("cars"))
     else:
         #anders terug naar login
         return redirect(url_for("login"))

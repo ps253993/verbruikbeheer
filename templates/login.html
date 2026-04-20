@@ -10,12 +10,12 @@
 
     <main class="login-shell">
         <div class="login-box">
-            <h2 class="login-title">Login</h2>
+            <h2 class="login-title">Inloggen of aanmelden</h2>
             <form method="post">
-                <input type="text" class="field" placeholder="Username" name="username">
-                <input type="password" class="field" placeholder="Password" name="password">
-                <button class="btn" name="btn" value="login">Login</button>
-                <button class="btn" name="btn" value="signup">Sign Up</button>
+                <input type="text" class="field" placeholder="Gebruikersnaam" name="username">
+                <input type="password" class="field" placeholder="Wachtwoord" name="password">
+                <button class="btn" name="btn" value="login">Inloggen</button>
+                <button class="btn" name="btn" value="signup">Aanmelden</button>
                 {% if status %}
                     <p class="status">{{ status }}</p>
                 {% endif %}

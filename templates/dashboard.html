@@ -15,8 +15,8 @@
       <a class="logo">Auto verbruik tracker</a>
     </div>
     <nav class="navbar__right">
-      <a href={{url_for("logboek")}} class="nav-link">Logboek</a>
-      <a href={{url_for("autos")}} class="nav-link">Autos</a>
+      <a href={{url_for("log")}} class="nav-link">Logboek</a>
+      <a href={{url_for("cars")}} class="nav-link">Autos</a>
       <a href={{url_for("logout")}} class="nav-link">Uitloggen</a>
     </nav>
   </header>
@@ -36,10 +36,10 @@
         </div>
 
         <div class="box">
-            <label for="mindatum">Exporteer van</label>
-            <input type="date" name="mindatum">
-            <label for="maxdatum">tot</label>
-            <input type="date" name="maxdatum">
+            <label for="mindate">Exporteer van</label>
+            <input type="date" name="mindate">
+            <label for="maxdate">tot</label>
+            <input type="date" name="maxdate">
             <select>
                 <option>Exporteer als</option>
                 <option value="xlsx">xlsx</option>
