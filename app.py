@@ -3,6 +3,7 @@ import secrets
 import sqlite3
 import hashlib
 import requests
+from werkzeug.security import check_password_hash, generate_password_hash
 
 db = sqlite3.connect("verbruikData.db", check_same_thread=False)
 
@@ -23,21 +24,28 @@ def index():
 def login():
     if request.method == 'POST':
 
-        username = db.execute("SELECT user_name FROM users WHERE user_name = ?", (request.form['username'],)).fetchone()
-        password = hashlib.sha256(request.form['password'].encode()).hexdigest()
-        auth = db.execute("SELECT * FROM users WHERE user_name = ? AND user_password = ?", (request.form['username'], password)).fetchone()
+        #username = db.execute("SELECT user_name FROM users WHERE user_name = ?", (request.form['username'],)).fetchone()
+        password = db.execute("SELECT user_password FROM users WHERE user_name = ?", (request.form['username'],)).fetchone()
+        #auth = db.execute("SELECT * FROM users WHERE user_name = ? AND user_password = ?", (request.form['username'], password)).fetchone()
+        try:
+            auth = check_password_hash(password[0], request.form['password'])
+        except:
+            auth = False
 
         #check voor juiste login gegevens
-        if auth and request.form['btn'] == "login":
+        if auth == True and request.form['btn'] == "login":
             #voeg user id aan sessie toe
-            session['user'] = db.execute("SELECT user_id FROM users WHERE user_name = ?", (username[0],)).fetchone()[0]
+            session['user'] = db.execute("SELECT user_id FROM users WHERE user_name = ?", (request.form['username'],)).fetchone()[0]
             return redirect(url_for("index"))   
         elif request.form['username'] != "" and request.form['password'] != "" and request.form['btn'] == "signup":
 
             #check of username al in database staat
-            if username == None:
+            if password == None:
                 # Voeg nieuwe gebruiker toe aan database
-                db.execute("INSERT INTO users (user_name, user_password) VALUES (?, ?)", (request.form['username'], password))
+                db.execute(
+                            "INSERT INTO users (user_name, user_password) VALUES (?, ?)", 
+                            (request.form['username'], generate_password_hash(request.form['password']))
+                           )
                 db.commit()
                 #zeg dat account is aangemaakt
                 return render_template("login.html", status="Account aangemaakt!")
