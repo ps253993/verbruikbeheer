@@ -1,7 +1,6 @@
 from flask import Flask, session, url_for, redirect, request, render_template
 import secrets
 import sqlite3
-import hashlib
 import requests
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -33,11 +32,11 @@ def login():
             auth = False
 
         #check voor juiste login gegevens
-        if auth == True and request.form['btn'] == "login":
+        if auth == True and request.form['btn'] == "Inloggen":
             #voeg user id aan sessie toe
             session['user'] = db.execute("SELECT user_id FROM users WHERE user_name = ?", (request.form['username'],)).fetchone()[0]
             return redirect(url_for("index"))   
-        elif request.form['username'] != "" and request.form['password'] != "" and request.form['btn'] == "signup":
+        elif request.form['username'] != "" and request.form['password'] != "" and request.form['btn'] == "Aanmelden":
 
             #check of username al in database staat
             if password == None:
