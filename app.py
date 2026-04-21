@@ -82,6 +82,7 @@ def cars():
     #check voor username in sessie
     if 'user' in session:
 
+        message = ""
         #als er op toevoegen word geklikt
         if request.method == 'POST':
 
@@ -95,16 +96,17 @@ def cars():
                                     url="https://opendata.rdw.nl/resource/8ys7-d773.json",
                                     params={"$query":f"SELECT brandstof_omschrijving WHERE kenteken = '{license_plate}'"}
                                    )
-            
+
             if carInfo.status_code != 200 or carFuel.status_code != 200 or len(carInfo.json()) == 0 or len(carFuel.json()) == 0:
-                return render_template("cars.html", message="Er is een fout opgetreden bij het ophalen van de gegevens.")
+                message = "Er is een fout opgetreden bij het ophalen van de gegevens!"
+            elif db.execute("SELECT car_licenseplate FROM cars WHERE car_licenseplate = ?", (license_plate,)).fetchone():
+                message = "Auto is al een keer toegevoegd!"
             else:
                 for car in carInfo.json():
                     carName = car['merk'].lower().capitalize() + " " + car['handelsbenaming'].lower().capitalize()
                 for fuel in carFuel.json():
                     fuelType = fuel['brandstof_omschrijving'].lower().capitalize()
-                if request.form["kilometers"] == "" or request.form["maxliter"] == "":
-                    return render_template("cars.html", message="Vul alle velden in.")
+        
                 db.execute("INSERT INTO cars (user_id, car_name, car_licenseplate, car_meters, car_fueltype, car_maxliter) VALUES (?, ?, ?, ?, ?, ?)", 
                         (session['user'], carName, license_plate, request.form["kilometers"], fuelType, request.form["max_liters"]))
                 db.commit()
@@ -128,7 +130,7 @@ def cars():
             </td>
             </tr>
             """
-        return render_template("cars.html", table=html)
+        return render_template("cars.html", table=html, message=message)
     else:
         #anders terug naar login
         return redirect(url_for("login"))
