@@ -23,9 +23,8 @@ def index():
 def login():
     if request.method == 'POST':
 
-        #username = db.execute("SELECT user_name FROM users WHERE user_name = ?", (request.form['username'],)).fetchone()
         password = db.execute("SELECT user_password FROM users WHERE user_name = ?", (request.form['username'],)).fetchone()
-        #auth = db.execute("SELECT * FROM users WHERE user_name = ? AND user_password = ?", (request.form['username'], password)).fetchone()
+
         try:
             auth = check_password_hash(password[0], request.form['password'])
         except:
