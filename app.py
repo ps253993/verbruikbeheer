@@ -105,7 +105,7 @@ def cars():
                 for fuel in carFuel.json():
                     fuelType = fuel['brandstof_omschrijving'].lower().capitalize()
         
-                db.execute("INSERT INTO cars (user_id, car_name, car_licenseplate, car_meters, car_fueltype, car_maxliter) VALUES (?, ?, ?, ?, ?, ?)", 
+                db.execute("INSERT INTO cars (user_id, car_name, car_licenseplate, car_kilometers, car_fueltype, car_maxliter) VALUES (?, ?, ?, ?, ?, ?)", 
                         (session['user'], carName, license_plate, request.form["kilometers"], fuelType, request.form["max_liters"]))
                 db.commit()
 
