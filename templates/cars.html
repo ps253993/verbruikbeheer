@@ -14,7 +14,7 @@
       <a class="logo">Auto verbruik tracker</a>
     </div>
     <nav class="navbar__right">
-      <a class="nav-link" href={{url_for("home")}}>Dashboard</a>
+      <a class="nav-link" href={{url_for("dashboard")}}>Dashboard</a>
       <a class="nav-link" href={{url_for("log")}}>Logboek</a>
       <a href={{url_for("logout")}} class="nav-link">Uitloggen</a>
     </nav>
@@ -33,7 +33,7 @@
             <input type="text" class="field" placeholder="Kenteken" name="license_plate" required/>
             <input type="number" class="field" placeholder="kilometerstand" name="kilometers" required/>
             <input type="number" class="field" placeholder="Maximale liters" name="max_liters" required/>
-            <input type="submit" class="btn" value="Toevoegen" />
+            <button class="btn" name="btn" value="Toevoegen" type="submit" formaction="/cars/addcar">Toevoegen</button>
             {% if message %}
                 <p class="error-message">{{ message }}</p>
             {% endif %}

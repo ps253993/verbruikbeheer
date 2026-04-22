@@ -14,8 +14,8 @@
             <form method="post">
                 <input type="text" class="field" placeholder="Gebruikersnaam" name="username" required/>
                 <input type="password" class="field" placeholder="Wachtwoord" name="password" required/>
-                <input class="btn" name="btn" value="Inloggen" type="submit"/>
-                <input class="btn" name="btn" value="Aanmelden" type="submit"/>
+                <button class="btn" name="btn" value="Inloggen" type="submit" formaction="/login">Inloggen</button>
+                <button class="btn" name="btn" value="Aanmelden" type="submit" formaction="/signup">Aanmelden</button>
                 {% if status %}
                     <p class="status">{{ status }}</p>
                 {% endif %}
