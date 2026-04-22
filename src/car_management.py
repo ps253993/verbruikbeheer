@@ -2,7 +2,7 @@ from flask import session, render_template
 import sqlite3
 import requests
 
-db = sqlite3.connect("verbruikData.db", check_same_thread=False)
+db = sqlite3.connect("db/verbruikData.db", check_same_thread=False)
 
 def get_rdwData(license_plate):
     carInfo = requests.get(

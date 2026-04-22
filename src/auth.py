@@ -2,7 +2,7 @@ from flask import session, url_for, redirect, render_template
 import sqlite3
 from werkzeug.security import check_password_hash, generate_password_hash
 
-db = sqlite3.connect("verbruikData.db", check_same_thread=False)
+db = sqlite3.connect("db/verbruikData.db", check_same_thread=False)
 
 def auth_get(request,status=""):
     return render_template("login.html", status=status)
