@@ -4,7 +4,7 @@ import sqlite3
 import requests
 from werkzeug.security import check_password_hash, generate_password_hash
 
-db = sqlite3.connect("verbruikData.db", check_same_thread=False)
+db = sqlite3.connect("db/verbruikData.db", check_same_thread=False)
 
 def log_get(request):
     return render_template("log.html")

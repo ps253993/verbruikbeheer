@@ -26,34 +26,48 @@
     <!-- Linker kolom -->
     <section class="left-panel">
         <div class="box">
-            <input type="date" placeholder="Datum">
-            <input type="number" placeholder="kilometerstand">
-            <select>
-                <option>Brandstof type</option>>
-            </select>
-            <input type="number" placeholder="Liters getankt">
-            <button class="btn">Toevoegen</button>
+            <form method="post">
+                <input type="date" placeholder="Datum" name= "refuel_date" value ="{{ maxDate }}" max="{{ maxDate }}" required>
+                <input type="number" placeholder="kilometerstand" name="kilometers" min="{{ maxKilometers }}" required>
+                <select name="fuel_type" required>
+                    {% if fuelTypes %}
+                        {% for fuel in fuelTypes %}
+                            <option name='fuel_type' value='{{ fuel }}'>{{ fuel }}</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+                <input type="number" placeholder="Liters getankt" name="refuel_liters" required>
+                <button class="btn" name="btn" value="Toevoegen" type="submit" formaction="{{ url_for('add_refuel') }}">Toevoegen</button>
+            </form>
         </div>
 
         <div class="box">
             <label for="mindate">Exporteer van</label>
-            <input type="date" name="mindate">
+            <input type="date" name="mindate" min="{{ minDate }}" max="{{ maxDate }}">
             <label for="maxdate">tot</label>
-            <input type="date" name="maxdate">
-            <select>
+            <input type="date" name="maxdate" min="{{ minDate }}" max="{{ maxDate }}">
+            <select name="export_format">
                 <option>Exporteer als</option>
                 <option value="xlsx">xlsx</option>
                 <option value="csv">csv</option>
             </select>
-            <button class="btn">Exporteer</button>
+            <button class="btn" name="btn" value="Exporteer" type="submit">Exporteer</button>
         </div>
     </section>
 
     <!-- Bovenste info blok -->
     <section class="top-info">
-        <select>
-            <option>Auto</option>
-        </select>
+        <form method="post">
+            <select onchange="this.form.submit()" name="car_select">
+                {% if cars %}
+                    {% for car in cars %}
+                        <option name='car_select' value='{{ car[0] }}'>{{ car[0] }}</option>
+                    {% endfor %}
+                {% else %}
+                    <option>Geen autos beschikbaar</option>
+                {% endif %}
+            </select>
+        </form>
         <div class="info-box">Laatste Tankbeurt</div>
         <div class="info-box">Laatste verbruik</div>
         <div class="info-box">Gem. verbruik</div>

@@ -3,10 +3,8 @@ import secrets
 
 from src.auth import auth_get, login_post, signup_post, logout_post, authicated
 from src.car_management import cars_get, addcar_post, deletecar_post
-from src.add_refuel import refuel_get, refuel_post
-from src.list_dashboard import dashboard_get, dashboard_post
+from src.dashboard import dashboard_get, dashboard_post, refuel_post
 from src.log import log_get, log_post
-
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex()
@@ -44,12 +42,11 @@ def dashboard():
     else:
         return redirect(url_for("login"))
 
-@app.route("/dashboard/add_refuel", methods=['GET', 'POST'])
+@app.route("/dashboard/add_refuel", methods=['POST'])
 def add_refuel():
     #check voor username in sessie
     if authicated():
-        if request.method == 'POST':
-            return refuel_post(request)
+        return refuel_post(request)
     else:
         return redirect(url_for("login"))
 
