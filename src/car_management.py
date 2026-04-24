@@ -1,4 +1,4 @@
-from flask import session, render_template
+from flask import session, render_template, url_for, redirect
 import sqlite3
 import requests
 
@@ -24,7 +24,7 @@ def get_rdwData(license_plate):
         
         return (carName, fuelType)
 
-def cars_get(request, message=""):
+def cars_get(request=None, message=""):
     cars = db.execute("SELECT * FROM cars WHERE user_id = ?", (session['user'],)).fetchall()
 
     html = ""
@@ -37,7 +37,7 @@ def cars_get(request, message=""):
         <td>{car[5]}</td>
         <td>{car[7]}</td>
         <td>
-            <form method='post' action='/cars/deletecar'>
+            <form method='post' action='{ url_for("deletecar") }'>
                 <input type='hidden' name='car_id' value='{car[0]}'><button class='btn' type='submit'>Verwijderen</button>
             </form>
         </td>
@@ -54,15 +54,15 @@ def addcar_post(request):
         message = "Er is een fout opgetreden bij het ophalen van de gegevens!"
     elif db.execute("SELECT car_licenseplate FROM cars WHERE car_licenseplate = ?", (license_plate,)).fetchone():
         message = "Auto is al een keer toegevoegd!"
+    else:
+        db.execute("INSERT INTO cars (user_id, car_name, car_licenseplate, car_kilometers, car_fueltype, car_maxliter) VALUES (?, ?, ?, ?, ?, ?)", 
+                (session['user'], rdwData[0], license_plate, request.form["kilometers"], rdwData[1], request.form["max_liters"]))
+        db.commit()
 
-    db.execute("INSERT INTO cars (user_id, car_name, car_licenseplate, car_kilometers, car_fueltype, car_maxliter) VALUES (?, ?, ?, ?, ?, ?)", 
-            (session['user'], rdwData[0], license_plate, request.form["kilometers"], rdwData[1], request.form["max_liters"]))
-    db.commit()
-
-    return cars_get(request, message)
+    return redirect(url_for("cars"))
 
 def deletecar_post(request):
     car_id = request.form['car_id']
     db.execute("DELETE FROM cars WHERE car_id = ? AND user_id = ?", (car_id, session['user']))
     db.commit()
-    return cars_get(request)
+    return redirect(url_for("cars"))

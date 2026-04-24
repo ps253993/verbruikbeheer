@@ -33,7 +33,7 @@
             <input type="text" class="field" placeholder="Kenteken" name="license_plate" required/>
             <input type="number" class="field" placeholder="kilometerstand" name="kilometers" required/>
             <input type="number" class="field" placeholder="Maximale liters" name="max_liters" required/>
-            <button class="btn" name="btn" value="Toevoegen" type="submit" formaction="/cars/addcar">Toevoegen</button>
+            <button class="btn" name="btn" value="Toevoegen" type="submit" formaction="{{ url_for('addcar') }}">Toevoegen</button>
             {% if message %}
                 <p class="error-message">{{ message }}</p>
             {% endif %}

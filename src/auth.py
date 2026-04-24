@@ -1,10 +1,10 @@
-from flask import session, url_for, redirect, render_template
+from flask import request, session, url_for, redirect, render_template
 import sqlite3
 from werkzeug.security import check_password_hash, generate_password_hash
 
 db = sqlite3.connect("db/verbruikData.db", check_same_thread=False)
 
-def auth_get(request,status=""):
+def auth_get(request=None,status=""):
     return render_template("login.html", status=status)
 
 def login_post(request):
@@ -36,12 +36,12 @@ def signup_post(request):
         #anders zeg dat account al bestaat
         return auth_get(request, status="Gebruikersnaam al in gebruik!")
     
-def logout_post(request):    
+def logout_post(request=None):    
     session.pop('user', None)
-    return auth_get(request)
+    return auth_get()
 
-def authicated(request):
+def authicated():
     if 'user' in session:
         return True
     else:
-        return auth_get(request)
+        return False
