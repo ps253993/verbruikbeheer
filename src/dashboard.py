@@ -26,12 +26,12 @@ def dashboard_get(request = None):
     if car:
         carId = db.execute("SELECT car_id FROM cars WHERE car_name = ? AND user_id = ?", (car, session['user'])).fetchone()[0]
         kilometers = db.execute("SELECT car_kilometers FROM cars WHERE car_id = ?", (carId,)).fetchone()[0]
-    else:
+    elif cars:
         car = cars[0][0]
         carId = cars[0][1]
         kilometers = cars[0][2]
-
-    print(car, carId, kilometers)
+    else:
+       return redirect(url_for("cars"))
 
     minDate = db.execute("SELECT MIN(fuelmoment_date) FROM refuels WHERE car_id = ?", (carId,)).fetchone()[0] if carId else None
     maxDate = datetime.date.today()
@@ -39,6 +39,12 @@ def dashboard_get(request = None):
     lastRefuelDate = db.execute("SELECT fuelmoment_date FROM refuels WHERE car_id = ? ORDER BY fuelmoment_date DESC LIMIT 1", (carId,)).fetchone()
     lastUsage = db.execute("SELECT fuelmoment_usage FROM refuels WHERE car_id = ? ORDER BY fuelmoment_date DESC LIMIT 1", (carId,)).fetchone()
     avrUsage = db.execute("SELECT AVG(CAST(SUBSTR(fuelmoment_usage, 3) AS FLOAT)) FROM refuels WHERE car_id = ?", (carId,)).fetchone()[0]
+
+    fuelMoments = db.execute("SELECT fuelmoment_date, fuelmoment_usage FROM refuels WHERE car_id = ? ORDER BY fuelmoment_date ASC", (carId,)).fetchall()
+    fuelDates = [str(moment[0]) for moment in fuelMoments]
+    fuelUsages = [float(moment[1].replace("1:","")) for moment in fuelMoments]
+
+    print(fuelDates, fuelUsages)
 
     if minDate == None:
         minDate = maxDate
@@ -52,7 +58,9 @@ def dashboard_get(request = None):
                     lastRefuelDate=lastRefuelDate[0] if lastRefuelDate else None,
                     lastUsage=lastUsage[0] if lastUsage else None,
                     avrUsage= "1:"+str(round(avrUsage, 1)) if avrUsage else None,
-                    activeCar=car
+                    activeCar=car,
+                    fuelDates=fuelDates,
+                    fuelUsages=fuelUsages
                     )
 
 def dashboard_post(request):
@@ -71,8 +79,12 @@ def refuel_post(request):
         print("Toegevoegd")
         db.execute("INSERT INTO refuels (car_id, user_id, fuelmoment_liters, fuelmoment_date, fuelmoment_type, fuelmoment_usage) VALUES (?, ?, ?, ?, ?, ?)",
                    (carId, session['user'], fuelLiters, date, fueltType, fuelUsage))
-        db.execute("UPDATE cars SET car_kilometers = ?, car_avrfuelusage = ? WHERE car_id = ?", 
-                   (newKilometers, "1:"+str(round(avrUsage, 1)), carId))
+        if avrUsage:
+                db.execute("UPDATE cars SET car_kilometers = ?, car_avrfuelusage = ? WHERE car_id = ?", 
+                        (newKilometers, "1:"+str(round(avrUsage, 1)), carId))
+        else:
+            db.execute("UPDATE cars SET car_kilometers = ?, car_avrfuelusage = ? WHERE car_id = ?", 
+                        (newKilometers, fuelUsage, carId))
         db.commit()
 
     return redirect(url_for("dashboard"))

@@ -109,10 +109,10 @@
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ["Jan", "Feb", "Mrt", "Apr", "Mei", "Jun"],
+            labels: JSON.parse('{{ fuelDates | tojson | safe }}'), //Datums
             datasets: [{
-                label: 'Brandstofverbruik (L/100km)',
-                data: [6.5, 6.8, 6.2, 7.0, 6.4, 6.1],
+                label: 'Brandstofverbruik (L:KM)',
+                data: JSON.parse('{{ fuelUsages | tojson | safe }}'), //Verbruik
                 borderColor: '#ff6b4a',
                 backgroundColor: 'rgba(255,107,74,0.2)',
                 borderWidth: 3,
