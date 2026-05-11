@@ -24,8 +24,13 @@ def get_rdwData(license_plate):
         
         return (carName, fuelType)
 
-def cars_get(request=None, message=""):
+def cars_get(request=None):
     cars = db.execute("SELECT * FROM cars WHERE user_id = ?", (session['user'],)).fetchall()
+
+    try:
+        message = error
+    except:
+        message = ""
 
     html = ""
     for car in cars:
@@ -48,12 +53,13 @@ def cars_get(request=None, message=""):
 def addcar_post(request):
     license_plate = str(request.form['license_plate']).upper()
     rdwData = get_rdwData(license_plate)
-    message = ""
+    global error
+    error = ""
 
     if rdwData == None:
-        message = "Er is een fout opgetreden bij het ophalen van de gegevens!"
+        error = "Er is een fout opgetreden bij het ophalen van de gegevens!"
     elif db.execute("SELECT car_licenseplate FROM cars WHERE car_licenseplate = ?", (license_plate,)).fetchone():
-        message = "Auto is al een keer toegevoegd!"
+        error = "Auto is al een keer toegevoegd!"
     else:
         db.execute("INSERT INTO cars (user_id, car_name, car_licenseplate, car_kilometers, car_fueltype, car_maxliter) VALUES (?, ?, ?, ?, ?, ?)", 
                 (session['user'], rdwData[0], license_plate, request.form["kilometers"], rdwData[1], request.form["max_liters"]))
