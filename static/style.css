@@ -100,7 +100,13 @@ body {
 }
 
 
-.top-info select,
+.top-info select {
+  color: #000;          /* tekst zichtbaar */
+  background-color: #fff;
+  min-width: 160px;     /* genoeg ruimte voor tekst */
+  padding-right: 30px;  /* ruimte voor pijltje */
+}
+
 .top-info .info-box {
     background: var(--label);
     padding: 12px;
@@ -466,4 +472,69 @@ body {
     width: 100%;
     margin-bottom: 15px;
     padding: 10px;
+}
+
+.top-stats {
+  display: flex;
+  gap: 20px;
+}
+
+/* De witte box */
+.stat-box {
+  background: white;
+  border-radius: 6px;
+  padding: 10px 14px;
+  min-width: 140px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Kleine titel bovenin */
+.stat-label {
+  font-size: 12px;
+  color: #555;
+}
+
+/* Grote waarde */
+.stat-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+}
+
+.car-select {
+  background-color: #fff;
+  color: #000;
+  min-width: 180px;
+  height: 36px;
+  padding: 6px 32px 6px 10px;
+
+  border-radius: 4px;
+  border: none;
+  font-size: 14px;
+}
+
+/* stat-box wordt al gebruikt door de andere gegevens */
+.stat-select {
+  padding: 8px 12px;
+}
+
+/* select ziet eruit als tekst in een kaart */
+.stat-select select {
+  margin-top: 2px;
+  padding: 0;
+  height: auto;
+
+  border: none;
+  background: transparent;
+
+  font-size: 15px;
+  font-weight: 600;
+  color: #000;
+
+  outline: none;
+  appearance: auto;
+  cursor: pointer;
 }

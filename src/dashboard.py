@@ -51,7 +51,8 @@ def dashboard_get(request = None):
                     maxKilometers=kilometers,
                     lastRefuelDate=lastRefuelDate[0] if lastRefuelDate else None,
                     lastUsage=lastUsage[0] if lastUsage else None,
-                    avrUsage= "1:"+avrUsage if avrUsage else None
+                    avrUsage= "1:"+str(avrUsage) if avrUsage else None,
+                    activeCar=car
                     )
 
 def dashboard_post(request):

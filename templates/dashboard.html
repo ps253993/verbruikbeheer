@@ -58,19 +58,40 @@
     <!-- Bovenste info blok -->
     <section class="top-info">
         <form method="post">
-            <select onchange="this.form.submit()" name="car_select">
-                {% if cars %}
-                    {% for car in cars %}
-                        <option name='car_select' value='{{ car[0] }}'>{{ car[0] }}</option>
-                    {% endfor %}
-                {% else %}
-                    <option>Geen autos beschikbaar</option>
-                {% endif %}
-            </select>
+            <div class="stat-box stat-select">
+                <span class="stat-label">Geselecteerde auto</span>
+
+                <select name="car_select" class="car-select" onchange="this.form.submit()">
+                    {% if cars %}
+                        {% for car in cars %}
+                            <option name='car_select' value='{{ car[0] }}' {% if car[0] == activeCar %}selected{% endif %}>{{ car[0] }}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option>Geen autos beschikbaar</option>
+                    {% endif %}
+                </select>
+            </div>
         </form>
-        <div class="info-box" placeholder="Laatste Tankbeurt">{{ lastRefuelDate }}</div>
-        <div class="info-box" placeholder="Laatste verbruik">{{ lastUsage }}</div>
-        <div class="info-box" placeholder="Gem. verbruik">{{ avrUsage }}</div>
+        
+        <div class="top-stats">
+
+            <div class="stat-box">
+                <span class="stat-label">Laatste tankbeurt</span>
+                <span class="stat-value">{{ lastRefuelDate }}</span>
+            </div>
+
+            <div class="stat-box">
+                <span class="stat-label">Laatste verbruik</span>
+                <span class="stat-value">{{ lastUsage }}</span>
+            </div>
+
+            <div class="stat-box">
+                <span class="stat-label">Gem. verbruik</span>
+                <span class="stat-value">{{ avrUsage }}</span>
+            </div>
+
+        </div>
+
     </section>
 
     <!-- Grafiek -->
