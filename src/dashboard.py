@@ -16,13 +16,22 @@ def list_fuels(auto):
         return ["LPG"]
 
 
-def dashboard_get(request):
+def dashboard_get(request = None):
     cars = db.execute("SELECT car_name, car_id, car_kilometers FROM cars WHERE user_id = ?", (session['user'],)).fetchall()
 
-    global car, carId
-    car = cars[0][0] if cars else None
-    carId = cars[0][1] if cars else None
-    kilometers = cars[0][2] if cars else None
+    car = request.form['car_select'] if request and 'car_select' in request.form else None
+
+    global carId
+
+    if car:
+        carId = db.execute("SELECT car_id FROM cars WHERE car_name = ? AND user_id = ?", (car, session['user'])).fetchone()[0]
+        kilometers = db.execute("SELECT car_kilometers FROM cars WHERE car_id = ?", (carId,)).fetchone()[0]
+    else:
+        car = cars[0][0]
+        carId = cars[0][1]
+        kilometers = cars[0][2]
+
+    print(car, carId, kilometers)
 
     minDate = db.execute("SELECT MIN(fuelmoment_date) FROM refuels WHERE car_id = ?", (carId,)).fetchone()[0] if carId else None
     maxDate = datetime.date.today()
@@ -42,14 +51,10 @@ def dashboard_get(request):
                     maxKilometers=kilometers,
                     lastRefuelDate=lastRefuelDate[0] if lastRefuelDate else None,
                     lastUsage=lastUsage[0] if lastUsage else None,
-                    avrUsage=avrUsage if avrUsage else None
+                    avrUsage= "1:"+avrUsage if avrUsage else None
                     )
 
 def dashboard_post(request):
-    global car, carId
-    car = request.form['car_select']
-    carId = db.execute("SELECT car_id FROM cars WHERE car_name = ? AND user_id = ?", (car, session['user'])).fetchone()[0]
-    
     return dashboard_get(request)
 
 def refuel_post(request):
