@@ -27,6 +27,10 @@ def dashboard_get(request):
     minDate = db.execute("SELECT MIN(fuelmoment_date) FROM refuels WHERE car_id = ?", (carId,)).fetchone()[0] if carId else None
     maxDate = datetime.date.today()
 
+    lastRefuelDate = db.execute("SELECT fuelmoment_date FROM refuels WHERE car_id = ? ORDER BY fuelmoment_date DESC LIMIT 1", (carId,)).fetchone()
+    lastUsage = db.execute("SELECT fuelmoment_usage FROM refuels WHERE car_id = ? ORDER BY fuelmoment_date DESC LIMIT 1", (carId,)).fetchone()
+    avrUsage = db.execute("SELECT AVG(CAST(SUBSTR(fuelmoment_usage, 3) AS FLOAT)) FROM refuels WHERE car_id = ?", (carId,)).fetchone()[0]
+
     if minDate == None:
         minDate = maxDate
 
@@ -35,7 +39,10 @@ def dashboard_get(request):
                     fuelTypes=list_fuels(car), 
                     minDate=minDate, 
                     maxDate=maxDate,
-                    maxKilometers=kilometers
+                    maxKilometers=kilometers,
+                    lastRefuelDate=lastRefuelDate[0] if lastRefuelDate else None,
+                    lastUsage=lastUsage[0] if lastUsage else None,
+                    avrUsage=avrUsage if avrUsage else None
                     )
 
 def dashboard_post(request):
