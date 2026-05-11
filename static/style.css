@@ -538,3 +538,23 @@ body {
   appearance: auto;
   cursor: pointer;
 }
+
+/* Zorg dat formulieren binnen .box dezelfde layout krijgen als de groene box */
+.box form{
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* gelijk aan .box gap */
+}
+
+/* Laat velden en knop netjes de volle breedte gebruiken */
+.box form input,
+.box form select,
+.box form button{
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Optioneel: knop ook full-width (als je ooit buttons buiten forms hebt) */
+.box .btn{
+  width: 100%;
+}
