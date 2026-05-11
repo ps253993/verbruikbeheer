@@ -21,7 +21,7 @@ def dashboard_get(request = None):
 
     car = request.form['car_select'] if request and 'car_select' in request.form else None
 
-    global carId
+    global carId, avrUsage
 
     if car:
         carId = db.execute("SELECT car_id FROM cars WHERE car_name = ? AND user_id = ?", (car, session['user'])).fetchone()[0]
@@ -51,7 +51,7 @@ def dashboard_get(request = None):
                     maxKilometers=kilometers,
                     lastRefuelDate=lastRefuelDate[0] if lastRefuelDate else None,
                     lastUsage=lastUsage[0] if lastUsage else None,
-                    avrUsage= "1:"+str(avrUsage) if avrUsage else None,
+                    avrUsage= "1:"+str(round(avrUsage, 1)) if avrUsage else None,
                     activeCar=car
                     )
 
@@ -65,12 +65,14 @@ def refuel_post(request):
     oldKilometers = int(db.execute("SELECT car_kilometers FROM cars WHERE car_id = ?", (carId,)).fetchone()[0])
     fueltType = request.form['fuel_type']
     fuelLiters = int(request.form['refuel_liters'])
-    fuelUsage = f"1:{str((newKilometers - oldKilometers) / fuelLiters)}"
+    fuelUsage = f"1:{str(round((newKilometers - oldKilometers) / fuelLiters, 1))}"
 
     if carId:
         print("Toegevoegd")
         db.execute("INSERT INTO refuels (car_id, user_id, fuelmoment_liters, fuelmoment_date, fuelmoment_type, fuelmoment_usage) VALUES (?, ?, ?, ?, ?, ?)",
                    (carId, session['user'], fuelLiters, date, fueltType, fuelUsage))
+        db.execute("UPDATE cars SET car_kilometers = ?, car_avrfuelusage = ? WHERE car_id = ?", 
+                   (newKilometers, "1:"+str(round(avrUsage, 1)), carId))
         db.commit()
 
     return redirect(url_for("dashboard"))
