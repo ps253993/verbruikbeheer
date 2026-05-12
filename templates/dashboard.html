@@ -42,16 +42,18 @@
         </div>
 
         <div class="box">
-            <label for="mindate">Exporteer van</label>
-            <input type="date" name="mindate" min="{{ minDate }}" max="{{ maxDate }}">
-            <label for="maxdate">tot</label>
-            <input type="date" name="maxdate" min="{{ minDate }}" max="{{ maxDate }}">
-            <select name="export_format">
-                <option>Exporteer als</option>
-                <option value="xlsx">xlsx</option>
-                <option value="csv">csv</option>
-            </select>
-            <button class="btn" name="btn" value="Exporteer" type="submit">Exporteer</button>
+            <form method="post">
+                <label for="mindate">Exporteer van</label>
+                <input type="date" name="mindate" min="{{ minDate }}" max="{{ maxDate }}" required>
+                <label for="maxdate">tot</label>
+                <input type="date" name="maxdate" min="{{ minDate }}" max="{{ maxDate }}" required>
+                <select name="export_format">
+                    <option>Exporteer als</option>
+                    <option value="xlsx">xlsx</option>
+                    <option value="csv">csv</option>
+                </select>
+                <button class="btn" name="btn" value="Exporteer" type="submit" formaction="{{ url_for('export') }}">Exporteer</button>
+            </form>
         </div>
     </section>
 

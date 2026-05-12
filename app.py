@@ -3,11 +3,16 @@ import secrets
 
 from src.auth import auth_get, login_post, signup_post, logout_post, authicated
 from src.car_management import cars_get, addcar_post, deletecar_post
-from src.dashboard import dashboard_get, dashboard_post, refuel_post
+from src.dashboard import dashboard_get, dashboard_post, refuel_post, export_post, tempDir
 from src.log import log_get, log_post
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex()
+
+@app.after_request
+def cleanupTemp(response):
+    tempDir.cleanup()
+    return response
 
 #index
 @app.route("/")
@@ -49,6 +54,14 @@ def add_refuel():
     #check voor username in sessie
     if authicated():
         return refuel_post(request)
+    else:
+        return redirect(url_for("login"))
+
+@app.route("/dashboard/export", methods=['POST'])
+def export():
+    #check voor username in sessie
+    if authicated():
+        return export_post(request)
     else:
         return redirect(url_for("login"))
 
