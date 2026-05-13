@@ -11,7 +11,7 @@ def get_rdwData(license_plate):
                             )
     carFuel = requests.get(
                             url="https://opendata.rdw.nl/resource/8ys7-d773.json",
-                            params={"$query":f"SELECT brandstof_omschrijving WHERE kenteken = '{license_plate}'"}
+                            params={"$query":f"SELECT brandstof_omschrijving, brandstofverbruik_gecombineerd WHERE kenteken = '{license_plate}'"}
                             )
 
     if carInfo.status_code != 200 or carFuel.status_code != 200 or len(carInfo.json()) == 0 or len(carFuel.json()) == 0:
@@ -21,8 +21,9 @@ def get_rdwData(license_plate):
             carName = car['merk'].lower().capitalize() + " " + car['handelsbenaming'].lower().capitalize()
         for fuel in carFuel.json():
             fuelType = fuel['brandstof_omschrijving'].lower().capitalize()
+            fuelUsage = "1:"+str(round(100/float(fuel['brandstofverbruik_gecombineerd']), 1))
         
-        return (carName, fuelType)
+        return (carName, fuelType, fuelUsage)
 
 def cars_get(request=None):
     cars = db.execute("SELECT * FROM cars WHERE user_id = ?", (session['user'],)).fetchall()
@@ -38,9 +39,9 @@ def cars_get(request=None):
         <tr>
         <td>{car[2]}</td>
         <td>{car[3]}</td>
+        <td>{car[6]}</td>
         <td>{car[4]}</td>
         <td>{car[5]}</td>
-        <td>{car[7]}</td>
         <td>
             <form method='post' action='{ url_for("deletecar") }'>
                 <input type='hidden' name='car_id' value='{car[0]}'><button class='btn' type='submit'>Verwijderen</button>
@@ -51,7 +52,7 @@ def cars_get(request=None):
     return render_template("cars.html", table=html, message=message)
 
 def addcar_post(request):
-    license_plate = str(request.form['license_plate']).upper()
+    license_plate = str(request.form['license_plate']).upper().replace("-", "")
     rdwData = get_rdwData(license_plate)
     global error
     error = ""
@@ -61,8 +62,8 @@ def addcar_post(request):
     elif db.execute("SELECT car_licenseplate FROM cars WHERE car_licenseplate = ?", (license_plate,)).fetchone():
         error = "Auto is al een keer toegevoegd!"
     else:
-        db.execute("INSERT INTO cars (user_id, car_name, car_licenseplate, car_kilometers, car_fueltype, car_maxliter) VALUES (?, ?, ?, ?, ?, ?)", 
-                (session['user'], rdwData[0], license_plate, request.form["kilometers"], rdwData[1], request.form["max_liters"]))
+        db.execute("INSERT INTO cars (user_id, car_name, car_licenseplate, car_fueltype, car_avrfuelusage, car_kilometers) VALUES (?, ?, ?, ?, ?, ?)", 
+                (session['user'], rdwData[0], license_plate, rdwData[1], rdwData[2], request.form["kilometers"]))
         db.commit()
 
     return redirect(url_for("cars"))

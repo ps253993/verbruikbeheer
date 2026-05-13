@@ -36,6 +36,8 @@ def dashboard_get(request = None):
         kilometers = cars[0][2]
     else:
        return redirect(url_for("cars"))
+    
+    avrRDWUsage = db.execute("SELECT car_avrfuelusage FROM cars WHERE car_id = ?", (carId,)).fetchone()[0]
 
     maxDate = datetime.date.today()
     minDate = db.execute("SELECT MIN(fuelmoment_date) FROM refuels WHERE car_id = ?", (carId,)).fetchone()[0] if carId else maxDate
@@ -57,7 +59,7 @@ def dashboard_get(request = None):
                     maxKilometers=kilometers,
                     lastRefuelDate=lastRefuelDate[0] if lastRefuelDate else None,
                     lastUsage=lastUsage[0] if lastUsage else None,
-                    avrUsage= "1:"+str(round(avrUsage, 1)) if avrUsage else None,
+                    avrUsage= "1:"+str(round(avrUsage, 1)) if avrUsage else avrRDWUsage,
                     activeCar=car,
                     fuelDates=fuelDates,
                     fuelUsages=fuelUsages,
