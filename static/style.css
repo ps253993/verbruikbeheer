@@ -304,6 +304,15 @@ body {
   margin-bottom: 12px;
 }
 
+
+.board__bar form{
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  column-gap: 16px;
+  width: 100%;
+}
+
 /* Titel exact in het midden uitgelijnd */
 .board__title{
   color: var(--label);
@@ -432,6 +441,12 @@ body {
     grid-template-columns: 1fr; /* onder elkaar */
     row-gap: 10px;
   }
+
+  .board__bar form{
+    grid-template-columns: 1fr; /* onder elkaar op mobiel */
+    row-gap: 10px;
+  }
+
   .board__title{ text-align: left; }
   .board__right{ justify-self: start; }
 }
@@ -557,4 +572,39 @@ body {
 /* Optioneel: knop ook full-width (als je ooit buttons buiten forms hebt) */
 .box .btn{
   width: 100%;
+}
+
+/* === LOGBOEK TOPBAR FIX (zet onderaan style.css) === */
+
+/* Maak de bar zelf simpel: de form bepaalt de layout */
+.board__bar{
+  display: block;
+}
+
+/* 3 kolommen: links (flex), midden (titel), rechts (datum) */
+.board__bar form{
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 16px;
+}
+
+/* Links echt links */
+.board__bar form .board__left{
+  justify-self: start;
+  min-width: 0; /* voorkomt dat links de titel “wegduwt” */
+}
+
+/* Titel exact in het midden */
+.board__bar form .board__title{
+  justify-self: center;  /* belangrijk! */
+  text-align: center;
+  margin: 0;
+}
+
+/* Rechts echt rechts */
+.board__bar form .board__right{
+  justify-self: end;     /* belangrijk! */
+  min-width: 0;
 }
