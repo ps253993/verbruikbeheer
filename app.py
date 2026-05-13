@@ -3,16 +3,11 @@ import secrets
 
 from src.auth import auth_get, login_post, signup_post, logout_post, authicated
 from src.car_management import cars_get, addcar_post, deletecar_post
-from src.dashboard import dashboard_get, dashboard_post, refuel_post, export_post, tempDir
+from src.dashboard import dashboard_get, dashboard_post, refuel_post, export_post
 from src.log import log_get, log_post, deleteRefuel_post
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex()
-
-@app.after_request
-def cleanupTemp(response):
-    tempDir.cleanup()
-    return response
 
 #index
 @app.route("/")

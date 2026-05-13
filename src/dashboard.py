@@ -1,10 +1,11 @@
-from flask import session, url_for, redirect, render_template, send_file
+from flask import session, url_for, redirect, render_template, send_file, after_this_request
 import sqlite3
 import xlsxwriter
 import csv
 import os
-import tempfile
+from tempfile import TemporaryDirectory
 import datetime
+import io
 
 db = sqlite3.connect("db/verbruikData.db", check_same_thread=False)
 
@@ -94,54 +95,81 @@ def refuel_post(request):
 
     return redirect(url_for("dashboard"))
 
-fieldnames = ["Date", "Car_Licenseplate", "Car_Name", "Fuel_Type", "Fuel_Liters", "Fuel_Usage", "Car_Kilometers"]
+fieldnames = ["Date", "Car_Licenseplate", "Car_Name", "Fuel_Type", "Fuel_Liters", "Fuel_Usage"]
 
-tempDir = tempfile.TemporaryDirectory()
-
-def export_xlsx(data):
-    filePath = os.path.join(tempDir.name, f"exportId{session['user']}.xlsx")
+def export_xlsx(data, minDate, maxDate):
+    tempDir = TemporaryDirectory()
+    filePath = f"{tempDir.name}/exportId{session['user']}.xlsx"
     workbook = xlsxwriter.Workbook(filePath)
     worksheet = workbook.add_worksheet()
 
     for row, fieldName in enumerate(fieldnames):
         worksheet.write(0,row,fieldName)
 
-    for row, (date, carLicenseplate, carName, fuelType, fuelLiters, fuelUsage, carKilometers) in enumerate(data):
-        if row > 0:
-            worksheet.write(row,0,date)
-            worksheet.write(row,1,carLicenseplate)
-            worksheet.write(row,2,carName)
-            worksheet.write(row,3,fuelType)
-            worksheet.write(row,4,fuelLiters)
-            worksheet.write(row,5,fuelUsage)
-            worksheet.write(row,6,carKilometers)
+    for row, (date, carLicenseplate, carName, fuelType, fuelLiters, fuelUsage) in enumerate(data):
+        row += 1
+        worksheet.write(row,0,date)
+        worksheet.write(row,1,carLicenseplate)
+        worksheet.write(row,2,carName)
+        worksheet.write(row,3,fuelType)
+        worksheet.write(row,4,fuelLiters)
+        worksheet.write(row,5,fuelUsage)
 
     workbook.close()
-    return send_file(path_or_file=filePath,as_attachment=True,download_name="Export.csv")
 
-def export_csv(data):
+    with open(filePath, "rb") as f:
+            file_bytes = f.read()
+            
+    @after_this_request
+    def cleanup(response):
+        print("cleanup")
+        tempDir.cleanup()
+        return response
+
+    downloadName = f"Export_{minDate}_{maxDate}.xlsx"
+
+    return send_file(path_or_file=io.BytesIO(file_bytes),as_attachment=True,download_name=downloadName)
+
+def export_csv(data, minDate, maxDate):
+    tempDir = TemporaryDirectory()
     dataList = []
 
-    filePath = os.path.join(tempDir.name, f"exportId{session['user']}.csv")
+    filePath =  filePath = os.path.join(tempDir.name, f"exportId{session['user']}.csv")
 
-    for (date, carLicenseplate, carName, fuelType, fuelLiters, fuelUsage, carKilometers) in data:
+    for (date, carLicenseplate, carName, fuelType, fuelLiters, fuelUsage) in data:
         dataList.append({"Date": date, 
                         "Car_Licenseplate": carLicenseplate, 
                         "Car_Name": carName,
                         "Fuel_Type": fuelType,
                         "Fuel_Liters": fuelLiters,
                         "Fuel_Usage": fuelUsage,
-                        "Car_Kilometers": carKilometers
                         })
 
     with open(filePath, 'x', newline='') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(dataList)
-    return send_file(path_or_file=filePath,as_attachment=True,download_name="Export.csv")
+
+
+    with open(filePath, "rb") as f:
+            file_bytes = f.read()
+
+
+    @after_this_request
+    def cleanup(response):
+        print("cleanup")
+        tempDir.cleanup()
+        return response
+
+    downloadName = f"Export_{minDate}_{maxDate}.csv"
+
+    return send_file(path_or_file=io.BytesIO(file_bytes),as_attachment=True,download_name=downloadName)
 
 
 def export_post(request):
+
+    minDate = request.form["mindate"]
+    maxDate = request.form["maxdate"]
 
     data = db.execute("""
                         select r.fuelmoment_date, 
@@ -149,21 +177,15 @@ def export_post(request):
                         c.car_licenseplate, 
                         r.fuelmoment_type, 
                         r.fuelmoment_liters, 
-                        r.fuelmoment_usage, 
-                        c.car_kilometers
+                        r.fuelmoment_usage 
                         from refuels r, cars c
                         where c.car_id = r.car_id
                         and r.car_id = ?
                         and fuelmoment_date between ? and ?
                         order by fuelmoment_date desc""", 
-                        (carId,request.form["mindate"],request.form["maxdate"])).fetchall()
+                        (carId, minDate, maxDate)).fetchall()
 
     if request.form["export_format"] == "xlsx":
-        return export_xlsx(data)
+        return export_xlsx(data, minDate, maxDate)
     elif request.form["export_format"] == "csv":
-        return export_csv(data)
-    
-    # try:
-    #     return send_file(path_or_file=file,as_attachment=True,download_name=fileName)
-    # finally:
-    #     tempDir.cleanup()
+        return export_csv(data, minDate, maxDate)
