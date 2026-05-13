@@ -4,7 +4,7 @@ import secrets
 from src.auth import auth_get, login_post, signup_post, logout_post, authicated
 from src.car_management import cars_get, addcar_post, deletecar_post
 from src.dashboard import dashboard_get, dashboard_post, refuel_post, export_post, tempDir
-from src.log import log_get, log_post
+from src.log import log_get, log_post, deleteRefuel_post
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex()
@@ -77,6 +77,13 @@ def log():
     else:
         return redirect(url_for("login"))
 
+@app.route("/log/delete_refuel", methods=['POST'])
+def delete_refuel():
+    if authicated():
+        return deleteRefuel_post(request)
+    else:
+        return redirect(url_for("login"))
+    
 #autos pagina
 @app.route("/cars", methods=['GET'])
 def cars():

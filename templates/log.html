@@ -26,30 +26,60 @@
 
       <!-- Bovenste regel: dropdown (links), titel (midden), datum (rechts) -->
       <div class="board__bar">
+        <form method="post">
         <div class="board__left">
           <label class="sr-only" for="filter">Filter</label>
-          <select id="filter" class="select">
-            <option selected>Auto</option>
-            <option>Optie 1</option>
-            <option>Optie 2</option>
-            <option>Optie 3</option>
+          <select name="car_select" class="car-select" onchange="this.form.submit()">
+              {% if cars %}
+                  {% for car in cars %}
+                      <option name='car_select' value='{{ car[0] }}' {% if car[0] == selectedCar %}selected{% endif %}>{{ car[0] }}</option>
+                  {% endfor %}
+              {% else %}
+                  <option>Geen autos beschikbaar</option>
+              {% endif %}
           </select>
         </div>
+        
 
         <h2 class="board__title">Logboek</h2>
 
         <div class="board__right">
           <label class="sr-only" for="datum">Datum</label>
-          <input id="datum" class="input" type="date" placeholder="Datum" />
+          <input class="input" type="date" name="start_date" min="{{ minDate }}" max="{{ maxDate }}" value="{{ selectedDate }}" onchange="this.form.submit()"/>
         </div>
+        </form>
       </div>
 
       <!-- Lijst-gebied -->
-      <div class="board__list">
-        <div class="placeholder">List</div>
-        <!--
-          Hier kun je later je echte logregels renderen (UL/LI of cards).
-        -->
+       <div class="board__list"> 
+        <table>
+                <thead>
+                    <tr>
+                        <th>Datum</th>
+                        <th>Liters getanked</th>
+                        <th>Verbruik</th>
+                        <th>Brandstof</th>
+                        <th>Actie</th>
+                    </tr>
+                </thead>
+                <tbody>
+                  {% if refuels %}
+                    {% for refuel in refuels %}
+                      <tr>
+                        <td>{{ refuel[1] }}</td>
+                        <td>{{ refuel[2] }}</td>
+                        <td>{{ refuel[3] }}</td>
+                        <td>{{ refuel[4] }}</td>
+                        <td>
+                          <form method='post' action='{{ url_for("delete_refuel") }}'>
+                              <input type='hidden' name='refuel_id' value='{{ refuel[0] }}'><button class='btn' type='submit'>Verwijderen</button>
+                          </form>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  {% endif %}
+                </tbody>
+            </table>
       </div>
 
     </section>

@@ -1,12 +1,10 @@
-from datetime import datetime
 from flask import session, url_for, redirect, render_template, send_file
 import sqlite3
-import datetime
 import xlsxwriter
 import csv
 import os
 import tempfile
-
+import datetime
 
 db = sqlite3.connect("db/verbruikData.db", check_same_thread=False)
 
