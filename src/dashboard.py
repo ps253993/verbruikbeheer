@@ -23,8 +23,6 @@ def list_fuels(auto):
 def dashboard_get(request = None):
     cars = db.execute("SELECT car_name, car_id, car_kilometers FROM cars WHERE user_id = ?", (session['user'],)).fetchall()
 
-    print(cars)
-
     car = request.form['car_select'] if request and 'car_select' in request.form else None
 
     global carId, avrUsage
@@ -50,8 +48,6 @@ def dashboard_get(request = None):
     fuelMoments = db.execute("SELECT fuelmoment_date, fuelmoment_usage FROM refuels WHERE car_id = ? ORDER BY fuelmoment_id ASC", (carId,)).fetchall()
     fuelDates = [str(moment[0]) for moment in fuelMoments]
     fuelUsages = [float(moment[1].replace("1:","")) for moment in fuelMoments]
-
-    print(fuelDates, fuelUsages)
 
     return render_template("dashboard.html", 
                     cars=cars, 
@@ -81,7 +77,6 @@ def refuel_post(request):
     fuelUsage = f"1:{str(round((newKilometers - oldKilometers) / fuelLiters, 1))}"
 
     if carId:
-        print("Toegevoegd")
         db.execute("INSERT INTO refuels (car_id, user_id, fuelmoment_liters, fuelmoment_date, fuelmoment_type, fuelmoment_usage) VALUES (?, ?, ?, ?, ?, ?)",
                    (carId, session['user'], fuelLiters, date, fueltType, fuelUsage))
         if avrUsage:
@@ -121,7 +116,6 @@ def export_xlsx(data, minDate, maxDate):
             
     @after_this_request
     def cleanup(response):
-        print("cleanup")
         tempDir.cleanup()
         return response
 
@@ -156,7 +150,6 @@ def export_csv(data, minDate, maxDate):
 
     @after_this_request
     def cleanup(response):
-        print("cleanup")
         tempDir.cleanup()
         return response
 

@@ -36,10 +36,8 @@ def dashboard():
     #check voor username in sessie
     if authicated():
         if request.method == 'GET':
-            print("get")
             return dashboard_get(request)
         if request.method == 'POST':
-            print("post", request.form)
             return dashboard_post(request)
     else:
         return redirect(url_for("login"))
