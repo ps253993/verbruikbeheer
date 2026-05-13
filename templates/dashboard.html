@@ -27,7 +27,7 @@
     <section class="left-panel">
         <div class="box">
             <form method="post">
-                <input type="date" placeholder="Datum" name= "refuel_date" value ="{{ maxDate }}" max="{{ maxDate }}" required>
+                <input type="date" placeholder="Datum" name= "refuel_date" value ="{{ maxDate }}" min="{{ lastRefuelDate }}" max="{{ maxDate }}" required>
                 <input type="number" placeholder="kilometerstand" name="kilometers" min="{{ maxKilometers }}" required>
                 <select name="fuel_type" required>
                     {% if fuelTypes %}
