@@ -44,9 +44,9 @@
         <div class="box">
             <form method="post">
                 <label for="mindate">Exporteer van</label>
-                <input type="date" name="mindate" min="{{ minDate }}" max="{{ maxDate }}" required>
+                <input type="date" name="mindate" min="{{ minDate }}" max="{{ maxExportDate }}" required>
                 <label for="maxdate">tot</label>
-                <input type="date" name="maxdate" min="{{ minDate }}" max="{{ maxDate }}" required>
+                <input type="date" name="maxdate" min="{{ minDate }}" max="{{ maxExportDate }}" required>
                 <select name="export_format">
                     <option>Exporteer als</option>
                     <option value="xlsx">xlsx</option>

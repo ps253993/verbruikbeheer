@@ -39,21 +39,19 @@ def dashboard_get(request = None):
     else:
        return redirect(url_for("cars"))
 
-    minDate = db.execute("SELECT MIN(fuelmoment_date) FROM refuels WHERE car_id = ?", (carId,)).fetchone()[0] if carId else None
     maxDate = datetime.date.today()
+    minDate = db.execute("SELECT MIN(fuelmoment_date) FROM refuels WHERE car_id = ?", (carId,)).fetchone()[0] if carId else maxDate
+    maxExportDate = db.execute("SELECT MAX(fuelmoment_date) FROM refuels WHERE car_id = ?", (carId,)).fetchone()[0] if carId else maxDate
 
-    lastRefuelDate = db.execute("SELECT fuelmoment_date FROM refuels WHERE car_id = ? ORDER BY fuelmoment_date DESC LIMIT 1", (carId,)).fetchone()
-    lastUsage = db.execute("SELECT fuelmoment_usage FROM refuels WHERE car_id = ? ORDER BY fuelmoment_date DESC LIMIT 1", (carId,)).fetchone()
+    lastRefuelDate = db.execute("SELECT fuelmoment_date FROM refuels WHERE car_id = ? ORDER BY fuelmoment_id DESC LIMIT 1", (carId,)).fetchone()
+    lastUsage = db.execute("SELECT fuelmoment_usage FROM refuels WHERE car_id = ? ORDER BY fuelmoment_id DESC LIMIT 1", (carId,)).fetchone()
     avrUsage = db.execute("SELECT AVG(CAST(SUBSTR(fuelmoment_usage, 3) AS FLOAT)) FROM refuels WHERE car_id = ?", (carId,)).fetchone()[0]
 
-    fuelMoments = db.execute("SELECT fuelmoment_date, fuelmoment_usage FROM refuels WHERE car_id = ? ORDER BY fuelmoment_date ASC", (carId,)).fetchall()
+    fuelMoments = db.execute("SELECT fuelmoment_date, fuelmoment_usage FROM refuels WHERE car_id = ? ORDER BY fuelmoment_id ASC", (carId,)).fetchall()
     fuelDates = [str(moment[0]) for moment in fuelMoments]
     fuelUsages = [float(moment[1].replace("1:","")) for moment in fuelMoments]
 
     print(fuelDates, fuelUsages)
-
-    if minDate == None:
-        minDate = maxDate
 
     return render_template("dashboard.html", 
                     cars=cars, 
@@ -66,7 +64,8 @@ def dashboard_get(request = None):
                     avrUsage= "1:"+str(round(avrUsage, 1)) if avrUsage else None,
                     activeCar=car,
                     fuelDates=fuelDates,
-                    fuelUsages=fuelUsages
+                    fuelUsages=fuelUsages,
+                    maxExportDate=maxExportDate
                     )
 
 def dashboard_post(request):
@@ -182,7 +181,7 @@ def export_post(request):
                         where c.car_id = r.car_id
                         and r.car_id = ?
                         and fuelmoment_date between ? and ?
-                        order by fuelmoment_date desc""", 
+                        order by fuelmoment_id desc""", 
                         (carId, minDate, maxDate)).fetchall()
 
     if request.form["export_format"] == "xlsx":
